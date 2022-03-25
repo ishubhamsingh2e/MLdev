@@ -1,3 +1,7 @@
+"""
+    use "q" for capturing new gesture
+    you can change caps variables
+"""
 import mediapipe as mp
 import cv2
 import numpy as np
@@ -5,7 +9,7 @@ import uuid
 import os
 import time
 
-flag = 0
+FLAG = 0
 VIDEO_FEED = 0
 WIN_TITLE = "HELLO_WORLD"
 MIN_DETECTION_CONFIDENCE = 0.6
@@ -52,7 +56,7 @@ with mp_hands.Hands(
             cv2.imwrite(os.path.join('data',f"{flag}",f"{uuid.uuid1()}.jpg"), image)
 
         if cv2.waitKey(10) & 0xFF == ord('q'):
-            flag += 1
+            FLAG += 1
             print(f"capturing gestures in 3 sec.")
             time.sleep(3)
 
