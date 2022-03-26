@@ -1,15 +1,9 @@
-"""
-    use "q" for capturing new gesture
-    you can change caps variables
-"""
 import mediapipe as mp
 import cv2
 import numpy as np
 import uuid
 import os
-import time
 
-FLAG = 0
 VIDEO_FEED = 1
 WIN_TITLE = "HELLO_WORLD"
 MIN_DETECTION_CONFIDENCE = 0.6
@@ -18,11 +12,6 @@ MIN_TRAKING_CONFIDENCE = 0.3
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
 cap = cv2.VideoCapture(VIDEO_FEED)
-
-try:
-    os.mkdir('data')
-except:
-    pass
 
 with mp_hands.Hands(
     min_detection_confidence= MIN_DETECTION_CONFIDENCE,
@@ -43,22 +32,18 @@ with mp_hands.Hands(
 
         print(results.multi_hand_landmarks)
 
+        if results.multi_hand_landmarks:
+            for num, hand in enumerate(results.multi_hand_landmarks):
+                mp_drawing.draw_landmarks(
+                    image, hand, mp_hands.HAND_CONNECTIONS, 
+                    mp_drawing.DrawingSpec(color=(0, 0, 225), thickness=2, circle_radius=1),
+                    mp_drawing.DrawingSpec(color=(0, 0, 0), thickness=2, circle_radius=2),
+                    )
+
         cv2.imshow(WIN_TITLE, image)
 
-        try:
-            os.mkdir("data/"+str(FLAG))
-            WIN_TITLE = "capturing gesture" + str(flag)
-        except:
-            pass
-
-        if results.multi_hand_landmarks:
-            time.sleep(0.1)
-            cv2.imwrite(os.path.join('data',f"{FLAG}",f"{uuid.uuid1()}.jpg"), image)
-
         if cv2.waitKey(10) & 0xFF == ord('q'):
-            FLAG += 1
-            print(f"capturing gestures in 3 sec.")
-            time.sleep(3)
+            break
 
 cap.release()
 cv2.destroyAllWindows()
